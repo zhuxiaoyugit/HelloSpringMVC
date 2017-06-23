@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd">
+
+    <context:property-placeholder location="classpath:app.properties"/>
+
+    <mongo:mongo-client id="mongoClient" host="${mongodb.host}" port="${mongodb.port}"/>
+
+    <mongo:db-factory id="dbFactory" dbname="test" mongo-ref="mongoClient"/>
+
+    <mongo:template id="mongoTemplate" db-factory-ref="dbFactory" converter-ref="mappingMongoConverter"/>
+
+    <bean id="dbRefResolver" class="org.springframework.data.mongodb.core.convert.DefaultDbRefResolver">
+        <constructor-arg ref="dbFactory"/>
+    </bean>
+
+    <bean id="mongoMappingContext" class="org.springframework.data.mongodb.core.mapping.MongoMappingContext"/>
+
+    <bean id="defaultMongoTypeMapper" class="org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper">
+        <constructor-arg name="typeKey">
+            <null/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="mappingMongoConverter" class="org.springframework.data.mongodb.core.convert.MappingMongoConverter">
+        <constructor-arg name="dbRefResolver" ref="dbRefResolver"/>
+        <constructor-arg name="mappingContext" ref="mongoMappingContext"/>
+        <property name="typeMapper" ref="defaultMongoTypeMapper"/>
+    </bean>
+
+</beans>
