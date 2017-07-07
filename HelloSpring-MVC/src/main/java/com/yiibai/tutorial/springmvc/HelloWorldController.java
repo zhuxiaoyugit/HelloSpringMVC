@@ -12,7 +12,7 @@ public class HelloWorldController {
          
         model.addAttribute("greeting", "Hello Spring MVC");
          
-        return"helloworld";
+        return "helloa";
          
     }
  
