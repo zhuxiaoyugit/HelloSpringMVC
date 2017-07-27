@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.xrun.user.mapper.UserInfoMapper">
+
+   <select id="queryUserInfoByUserId" parameterType="java.lang.String" resultType="com.xrun.user.pojo.UserInfo">
+   		SELECT * from user_info where user_id = #{user_id}
+   </select>
+
+	<insert id="addUserInfo" parameterType="com.xrun.user.pojo.UserInfo">
+		INSERT into user_info (user_id,first_name,last_name,email,country,city,positions,intro,gender,birthday,height,weight,avatar_url,add_time)
+			VALUES(#{user_id},#{first_name},#{last_name},#{email},#{country},#{city},#{positions},#{intro},#{gender},#{birthday},#{height},#{weight},
+				#{avatar_url},UNIX_TIMESTAMP(NOW())*1000)
+	</insert>
+
+	<update id="updateUserInfoByUserId" parameterType="java.util.Map" >
+		update user_info set birthday=#{birthday},first_name=#{first_name},last_name=#{last_name},email=#{email},country=#{country},
+			city=#{city},positions=#{positions},intro=#{intro},gender=#{gender},height=#{height},weight=#{weight},
+				avatar_url=#{avatar_url} where user_id=#{user_id}
+	</update>
+	
+	
+	<select id="queryUserInfoByUserIdAndUserToken" parameterType="java.util.Map" resultType="com.xrun.user.pojo.UserInfo">
+   		SELECT i.* from user_info i LEFT JOIN user_account a on i.user_id=a.id and a.user_token=#{user_token} where i.user_id=#{dest_user_id}
+   </select>
+   
+   
+   <select id="queryUserInfo4List" parameterType="java.util.List" resultType="com.xrun.user.pojo.UserInfo">
+   		select * from user_info where user_id IN 
+   		<foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+               #{item}
+    	</foreach>
+   	
+   </select>
+   
+   
+   <select id="queryUserInfos" parameterType="java.util.Map" resultType="com.xrun.user.pojo.UserInfo">
+   		select * from user_info 
+   		<where>
+   			<if test="country != null">
+   				country = #{country}
+   			</if>
+   			<if test="gender != null">
+   				and gender = #{gender}
+   			</if>
+   			<if test="user_id != null">
+   			<![CDATA[
+   				and user_id  <>  #{user_id}
+   			]]>
+   			</if>
+   			<if test="user_friend_list != null">
+   				and user_id not in 
+   				<foreach item="item" index="index" collection="user_friend_list" open="(" separator="," close=")">
+   					#{item.friend_user_id} 
+   				</foreach>
+   			</if>
+   		</where>
+   		order by add_time desc limit #{top}
+   </select>
+   
+</mapper>

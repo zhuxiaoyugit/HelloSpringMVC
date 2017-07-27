@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<include resource="org/springframework/boot/logging/logback/base.xml"/>
+	<conversionRule conversionWord="ip" converterClass="com.xrun.user.util.IpCovert" />
+	<logger name="org.apache.kafka" level="error" />
+	<property name="log.dir" value="../.." />
+	<property name="app.name" value="xrun" />
+	<property name="module" value="user" />
+	<property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss}|%level|${app.name}|%ip|%logger{55}|%msg%n"/>
+	
+	<property name="RUN_LOG_FILE" value="${log.dir}/logs/${app.name}/${module}_run.log"/>
+	<property name="ACCESS_LOG_FILE" value="${log.dir}/logs/${app.name}/${module}_access.log"/>
+	<property name="OPERATE_LOG_FILE" value="${log.dir}/logs/${app.name}/${module}_operate.log"/>
+	
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>${LOG_PATTERN}</pattern>
+			<charset>utf8</charset>
+		</encoder>
+	</appender>
+	
+	<appender name="RUN" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${RUN_LOG_FILE}</file>
+        <append>true</append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${RUN_LOG_FILE}.%d{yyyyMMdd}</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>30GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+			<pattern>${LOG_PATTERN}</pattern>   
+			<charset>utf8</charset>
+		</encoder>
+    </appender>
+    
+    <appender name="ACCESS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${ACCESS_LOG_FILE}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${ACCESS_LOG_FILE}.%d{yyyyMMdd}</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>30GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+			<pattern>${LOG_PATTERN}</pattern>   
+			<charset>utf8</charset>
+		</encoder>
+    </appender>
+    
+    <appender name="OPERATE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${OPERATE_LOG_FILE}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${OPERATE_LOG_FILE}.%d{yyyyMMdd}</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>30GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+			<pattern>${LOG_PATTERN}</pattern>   
+			<charset>utf8</charset>
+		</encoder>
+    </appender>
+    
+    <!-- logger -->
+    <logger name="x.run.log" level="INFO" additivity="false" >
+        <appender-ref ref="RUN"/>
+        <appender-ref ref="CONSOLE" />
+    </logger>
+    
+    <logger name="x.access.log" level="INFO" additivity="false">
+        <appender-ref ref="ACCESS"/>
+        <appender-ref ref="CONSOLE" />
+    </logger>
+    
+    <logger name="x.operate.log" level="INFO" additivity="false">
+        <appender-ref ref="OPERATE"/>
+        <appender-ref ref="CONSOLE" />
+    </logger>
+    
+    <logger name="org.springframework" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE" />
+    </logger>
+    
+    <logger name="com.netflix" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE" />
+    </logger>
+    
+    <!--log4jdbc -->
+    <logger name="com.xrun.user.mapper" level="INFO" additivity="false">
+    	<appender-ref ref="CONSOLE" />
+    </logger>
+    
+    
+</configuration>

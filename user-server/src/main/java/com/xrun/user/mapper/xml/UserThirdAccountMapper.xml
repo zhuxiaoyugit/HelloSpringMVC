@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xrun.user.mapper.UserThirdAccountMapper">
+	<resultMap type="com.xrun.user.pojo.UserThirdAccount" id="ThirdAccountResultMap">
+		<result column="third_type" property="third_type" jdbcType="INTEGER" />
+		<result column="user_id" property="user_id"  />
+		<result column="uuid" property="uuid" jdbcType="VARCHAR" />
+		<result column="third_token" property="third_token" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="queryUserThirdAccount4Login" parameterType="java.util.Map" resultMap="ThirdAccountResultMap" >
+		SELECT * from user_third_account where uuid=#{uuid} and third_type = #{thirdType}
+	</select>
+	
+	<insert id="addUserThirdAccount" parameterType="com.xrun.user.pojo.UserThirdAccount">
+		INSERT into user_third_account (third_type,user_id,uuid,third_token,add_time) VALUES
+			(#{third_type},#{user_id},#{uuid},#{third_token},UNIX_TIMESTAMP(NOW())*1000)
+	</insert>
+	
+	<select id="queryThirdAccount4Bind" parameterType="java.util.Map" resultMap="ThirdAccountResultMap">
+		SELECT ta.* from user_third_account ta LEFT JOIN user_account a on ta.user_id=a.id and a.user_token = #{user_token}
+			where ta.third_type = #{third_type} and ta.user_id = #{user_id}
+	</select>
+	
+	<select id="selectUserBindThirdAccount" parameterType="java.util.Map" resultMap="ThirdAccountResultMap">
+		SELECT uta.* from user_third_account uta LEFT JOIN user_account a on a.id = uta.user_id and a.user_token= #{user_token}
+			where uta.user_id = #{user_id}
+	</select>
+	
+	<delete id="delete4Unbind" parameterType="java.util.Map">
+		DELETE from user_third_account where user_id=#{user_id} and third_type=#{third_type}
+	</delete>
+	
+	
+<!-- 	<select id="queryThirdAccountByUuid" parameterType="java.util.List" resultMap="ThirdAccountResultMap">
+		select * from user_third_account where uuid in 
+		<foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+               #{item}
+    	</foreach>
+		GROUP BY user_id
+		
+	</select> -->
+	<select id="queryThirdAccountByUuid" parameterType="java.lang.String" resultMap="ThirdAccountResultMap">
+		select * from user_third_account where uuid =#{uuid}
+	</select>
+	
+	
+	
+</mapper>

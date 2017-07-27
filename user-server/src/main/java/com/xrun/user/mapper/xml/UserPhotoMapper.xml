@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xrun.user.mapper.UserPhotoMapper">
+
+
+<!-- 	<select id="queryUserPhotoByUserIdAndToken" parameterType="java.util.Map"
+		resultType="com.xrun.user.pojo.UserPhoto">
+		 <![CDATA[
+		 	SELECT p.* from user_photo p LEFT JOIN user_account a on a.id=p.user_id and a.user_token= #{user_token} where p.user_id= #{dest_user_id}
+		 	and motion_type > 0 limit #{offset},#{length}
+		 ]]>
+	</select> -->
+
+	<select id="queryUserPhotoByUserIdAndToken" parameterType="java.util.Map" resultType="com.xrun.user.pojo.UserPhoto">
+		SELECT p.* from user_photo p LEFT JOIN user_account a on a.id=p.user_id and a.user_token= #{user_token} where p.user_id= #{dest_user_id} 
+			limit #{offset},#{length}
+	</select>
+
+</mapper>
